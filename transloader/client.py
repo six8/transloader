@@ -106,7 +106,7 @@ class TransloadIt(object):
 
         return Assembly(response.json['assembly_url'])
 
-    def create_assembly(self, template_id, file=None, steps=None, fields=None):
+    def create_assembly(self, template_id, file=None, steps=None, fields=None, notify_url=None, redirect_url=None):
         """
         :param template_id: transloadit.com template id
         :param file: File like object to upload as source media
@@ -119,7 +119,9 @@ class TransloadIt(object):
         params = self._params(
             template_id = template_id,
             steps = steps,
-            fields = fields
+            fields = fields,
+            notify_url = notify_url,
+            redirect_url = redirect_url
         )
 
         params = json.dumps(params)
