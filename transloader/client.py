@@ -21,8 +21,9 @@ def _timestr(dt):
 
 
 def _parse_response(response):
-    if response.json and response.json.get('error'):
-        raise TransloadItError(response.json.get('message'), response.json.get('error'), response.status_code)
+    data = response.json()
+    if data and data.get('error'):
+        raise TransloadItError(data.get('message'), data.get('error'), response.status_code)
 
     if response.status_code < 200 or response.status_code >= 400:
         raise TransloadItError(response.text, None, response.status_code)
@@ -89,7 +90,8 @@ class TransloadIt(object):
             data=dict(params=params, signature=self.sign(params)),
         ))
 
-        return Assembly(response.json['assembly_url'])
+        data = response.json()
+        return Assembly(data['assembly_url'])
 
     def replay_assembly_notification(self, assembly_id):
         """
@@ -104,7 +106,8 @@ class TransloadIt(object):
             data=dict(params=params, signature=self.sign(params)),
         ))
 
-        return Assembly(response.json['assembly_url'])
+        data = response.json()
+        return Assembly(data['assembly_url'])
 
     def create_assembly(self, template_id, file=None, steps=None, fields=None, notify_url=None, redirect_url=None):
         """
@@ -131,7 +134,8 @@ class TransloadIt(object):
             files=[file] if file else None
         ))
 
-        return Assembly(response.json['assembly_url'])
+        data = response.json()
+        return Assembly(data['assembly_url'])
 
     def assemblies(self, page=1, pagesize=100, type='all', fromdate=None, todate=None, keywords=None):
         """
@@ -164,7 +168,7 @@ class TransloadIt(object):
 
             response = _parse_response(response)
 
-            data = response.json
+            data = response.json()
 
             count = data['count']
             items = data['items']
@@ -202,7 +206,7 @@ class Assembly(object):
         if not self._info:
             response = requests.get(self.url)
             response = _parse_response(response)
-            self._info = response.json
+            self._info = response.json()
         return self._info
 
     @property
